@@ -69,7 +69,7 @@ function Get-FreeSpace {
 .DESCRIPTION
    
 .EXAMPLE
-   Example of how to use this cmdlet
+   Get-FreeSpace -Computer "server01"
 .EXAMPLE
    Another example of how to use this cmdlet
 #>
