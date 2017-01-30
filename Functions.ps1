@@ -1,5 +1,5 @@
-function Get-NamePrefixList
-{
+function Get-NamePrefixList {
+
 <#
 .Synopsis
    Generate an array of names with a specific prefix
@@ -91,4 +91,40 @@ Function Connect-RDP {
     }
     until ($connectiontest -eq "True")
     mstsc /v:$computername
+}
+
+<#
+.Synopsis
+   Reclaim disk space by clearing out various temp folders on a local or remote machines.
+.DESCRIPTION
+   
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
+function Clear-DiskSpace {
+
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+        # Param1 help description
+        [Parameter(Mandatory=$true,
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        $Param1
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+    }
+    End
+    {
+    }
 }
