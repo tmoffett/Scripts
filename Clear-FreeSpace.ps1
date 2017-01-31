@@ -134,23 +134,76 @@ Param
 )
  
 Begin {
-    Write-Verbose -Message "Starting $($MyInvocation.Mycommand)"  
-}
+        Write-Verbose -Message "Starting $($MyInvocation.Mycommand)"  
+      }
  
 Process {
   Write-Verbose -Message "Testing $computername"
-  Try {
-    $r = Test-WSMan -ComputerName $Computername -Credential $Credential -Authentication Default -ErrorAction Stop
-    Write-Output $True 
-  }
-  Catch {
-    Write-Verbose $_.Exception.Message
-    Write-Output $False
- 
-  }
+  Try 
+      {
+        $r = Test-WSMan -ComputerName $Computername -Credential $Credential -Authentication Default -ErrorAction Stop
+        Write-Output $True 
+      }
+  Catch [System.InvalidOperationException] 
+        {
+            Write-Verbose "The computer $ComputerName cannot be found."
+            Write-Output $False
+        }
 }
  
 End {
-    Write-Verbose -Message "Ending $($MyInvocation.Mycommand)"
+        Write-Verbose -Message "Ending $($MyInvocation.Mycommand)"
+    }
+}
+
+
+function Run-CleanMgr
+{
+<#
+.Synopsis
+   This shit don't work yo.
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
+    [CmdletBinding()]
+    [Alias()]
+    Param
+    (
+        # Param1 help description
+        [Parameter(Mandatory=$true,
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        $ComputerName,
+        [System.Management.Automation.Credential()]$Credential = [System.Management.Automation.PSCredential]::Empty
+    )
+
+    Begin
+    {
+        $CleanMgr = $null
+    }
+    Process
+    {
+        Try {
+            $CleanMgr = Invoke-Command -ComputerName $ComputerName -ErrorAction Stop -ErrorVariable EV -ScriptBlock {
+                    Write-Verbose "Does this thing work?"
+                    Start-Process -FilePath Cleanmgr -ArgumentList '/sagerun:1' -Wait -ErrorAction Stop -ErrorVariable EV
+                    #Write-Output $true
+                }
+             }
+
+        Catch [System.Management.Automation.RemoteException] 
+              {
+                Write-Verbose "It appears that CleanMgr.exe (Disk Cleanup) is not installed on $ComputerName."
+              }
+    }
+    End
+    {
+        Write-Verbose "The value of the CleanMgr variable is: $CleanMgr"
+        Write-Verbose $Error[0].Exception.GetType().FullName
     }
 }
